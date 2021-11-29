@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage SMTPConnection
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.0.0
+ * @version 2.1.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class SMTPConnection extends TCPConnection
@@ -145,7 +145,6 @@ class SMTPConnection extends TCPConnection
 			throw new \Exception('Not connected');
 		}
 
-		$this->setTimeout(2);
 		$response = $this->readLine();
 		$this->writeLine('EHLO '.$hostname);
 		$response = $this->read();
