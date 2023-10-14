@@ -6,13 +6,13 @@ declare(strict_types=1);
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
  */
-namespace unrealization\PHPClassCollection;
+namespace unrealization;
 /**
  * @package PHPClassCollection
  * @subpackage SMTPConnection
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.0
+ * @version 3.0.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class SMTPConnection extends TCPConnection
@@ -21,17 +21,17 @@ class SMTPConnection extends TCPConnection
 	 * The username used for authentication.
 	 * @var string
 	 */
-	private $username;
+	private string $username;
 	/**
 	 * The password used for authentication.
 	 * @var string
 	 */
-	private $password;
+	private string $password;
 	/**
 	 * The authentication-mechanisms supported by the class.
 	 * @var array
 	 */
-	private $authMechs = array('CRAM-MD5', 'PLAIN', 'LOGIN');
+	private array $authMechs = array('CRAM-MD5', 'PLAIN', 'LOGIN');
 
 	/**
 	 * Constructor
