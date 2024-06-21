@@ -12,7 +12,7 @@ namespace unrealization;
  * @subpackage SMTPConnection
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 3.0.0
+ * @version 4.0.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class SMTPConnection extends TCPConnection
@@ -32,6 +32,12 @@ class SMTPConnection extends TCPConnection
 	 * @var array
 	 */
 	private array $authMechs = array('CRAM-MD5', 'PLAIN', 'LOGIN');
+	/**
+	 * Whether to use TLS encryption when the server offers the STARTTLS command.
+	 * @var boolean
+	 */
+	private bool $allowStartTls = true;
+	private bool $tlsPeerVerification = false;
 
 	/**
 	 * Constructor
@@ -67,6 +73,11 @@ class SMTPConnection extends TCPConnection
 
 		$this->username = $username;
 		$this->password = $password;
+	}
+
+	public function enableStartTls(bool $enabled): void
+	{
+		$this->allowStartTls = $enabled;
 	}
 
 	/**
@@ -149,10 +160,37 @@ class SMTPConnection extends TCPConnection
 		$this->writeLine('EHLO '.$hostname);
 		$response = $this->read();
 
-		if (substr($response,0,1) != 2)
+		if (substr($response, 0, 1) != 2)
 		{
 			$this->disconnect();
 			throw new \Exception('Invalid response from server');
+		}
+
+		if (($this->allowStartTls === true) && (preg_match('@STARTTLS'."\r\n".'@Um', $response, $matches)))
+		{
+			$this->writeLine('STARTTLS');
+			$response = $this->readLine();
+
+			if (substr($response, 0, 1) != 2)
+			{
+				$this->disconnect();
+				throw new \Exception('Invalid response from server');
+			}
+
+			if ($this->enableEncryption(true, STREAM_CRYPTO_METHOD_TLS_CLIENT, !$this->tlsPeerVerification) === false)
+			{
+				$this->disconnect();
+				throw new \Exception('Cannot enable encryption');
+			}
+
+			$this->writeLine('EHLO '.$hostname);
+			$response = $this->read();
+
+			if (substr($response, 0, 1) != 2)
+			{
+				$this->disconnect();
+				throw new \Exception('Invalid response from server');
+			}
 		}
 
 		$authentication = false;
