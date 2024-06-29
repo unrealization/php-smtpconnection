@@ -12,7 +12,7 @@ namespace unrealization;
  * @subpackage SMTPConnection
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 4.0.0
+ * @version 4.99.1
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class SMTPConnection extends TCPConnection
@@ -37,7 +37,6 @@ class SMTPConnection extends TCPConnection
 	 * @var boolean
 	 */
 	private bool $allowStartTls = true;
-	private bool $tlsPeerVerification = false;
 
 	/**
 	 * Constructor
@@ -177,7 +176,7 @@ class SMTPConnection extends TCPConnection
 				throw new \Exception('Invalid response from server');
 			}
 
-			if ($this->enableEncryption(true, STREAM_CRYPTO_METHOD_TLS_CLIENT, !$this->tlsPeerVerification) === false)
+			if ($this->enableEncryption(true, STREAM_CRYPTO_METHOD_TLS_CLIENT) === false)
 			{
 				$this->disconnect();
 				throw new \Exception('Cannot enable encryption');
